@@ -1,10 +1,13 @@
 package cn.voriya.framework.security.context;
 
 
+import cn.voriya.framework.entity.enums.ResultCode;
+import cn.voriya.framework.exception.ServiceException;
 import cn.voriya.framework.security.AuthUser;
 import cn.voriya.framework.security.enums.SecurityEnum;
 import cn.voriya.framework.security.token.TokenUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -34,8 +37,10 @@ public class UserContext {
     public static String getCurrentUserUUID() {
         if (RequestContextHolder.getRequestAttributes() != null) {
             HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-            return request.getHeader(SecurityEnum.UUID.getValue());
+            String uuid = request.getHeader(SecurityEnum.UUID.getValue());
+            if(!StringUtils.hasLength(uuid)) throw new ServiceException(ResultCode.UUID_NOT_FIND);
+            return uuid;
         }
-        return null;
+        throw new ServiceException(ResultCode.UUID_NOT_FIND);
     }
 }
