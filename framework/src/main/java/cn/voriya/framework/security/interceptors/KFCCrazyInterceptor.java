@@ -13,7 +13,7 @@ import java.time.temporal.ChronoField;
 @Configuration
 @Slf4j
 public class KFCCrazyInterceptor {
-    @Before("execution(public * cn.voriya.*.controller.*.*(..))")
+    @Before("@within(org.springframework.stereotype.Controller)||@within(org.springframework.web.bind.annotation.RestController)")
     public void interceptor() {
         LocalDateTime now = LocalDateTime.now();
         int day = now.getDayOfWeek().get(ChronoField.DAY_OF_WEEK);
