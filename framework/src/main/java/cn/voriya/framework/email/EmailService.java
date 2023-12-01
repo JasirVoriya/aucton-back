@@ -5,6 +5,7 @@ import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.exception.ServiceException;
 import cn.voriya.framework.security.context.UserContext;
 import cn.voriya.framework.security.enums.VerificationEnums;
+import cn.voriya.framework.utils.CommonUtil;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -73,7 +74,7 @@ public class EmailService {
         String uuid = UserContext.getCurrentUserUUID();
         if (uuid == null) throw new ServiceException(ResultCode.UUID_NOT_FIND);
         //验证码
-        String code = String.valueOf(Math.abs((new Random()).nextInt() % (int) 1e5));
+        String code = CommonUtil.getRandomNum();
         String context = String.valueOf(verificationEnums);
         //生成html内容
         String htmlContext = makeHtmlContext(code, context);
