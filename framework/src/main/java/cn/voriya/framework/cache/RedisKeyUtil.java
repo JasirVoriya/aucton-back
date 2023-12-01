@@ -25,4 +25,7 @@ public class RedisKeyUtil {
     public static String loginKey(AuthUser authUser) {
         return String.format("%s-%s-%s", CachePrefix.LOGIN.getPrefix(), authUser.getRole().name(), authUser.getId());
     }
+    public static String apiLimitKey(String ip, String uri) {
+        return String.format("%s-%s-%s", CachePrefix.API_ACCESS_LIMIT.getPrefix(), ip, uri);
+    }
 }
