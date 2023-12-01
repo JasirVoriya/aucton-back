@@ -4,6 +4,8 @@ import cn.voriya.framework.entity.enums.ResultCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
+
 /**
  * 全局业务异常类
  *
@@ -12,6 +14,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class ServiceException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 3447728300174142127L;
 
     public static final String DEFAULT_MESSAGE = "网络错误，请稍后重试！";
