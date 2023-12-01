@@ -19,10 +19,10 @@ public class EmailController {
         this.emailService = emailService;
     }
 
-    @AccessLimit(seconds = 60, maxCount = 10)
-    @GetMapping("test/{email}")
-    public ResultMessage<String> send(@PathVariable String email){
-//        emailService.sendCode(email,"验证码", VerificationEnums.LOGIN);
+    @AccessLimit(seconds = 60, maxCount = 1)
+    @GetMapping("login/{email}")
+    public ResultMessage<Boolean> getLoginCode(@PathVariable String email){
+        emailService.sendCode(email,"登录", VerificationEnums.LOGIN);
         return ResultUtil.success();
     }
 }
