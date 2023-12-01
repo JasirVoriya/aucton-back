@@ -1,18 +1,17 @@
 package cn.voriya.framework.security.interceptors;
 
-import cn.voriya.framework.cache.Cache;
 import cn.voriya.framework.security.AuthUser;
 import cn.voriya.framework.security.annotations.Login;
 import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.exception.ServiceException;
 import cn.voriya.framework.security.context.UserContext;
 import cn.voriya.framework.security.enums.UserEnums;
-import cn.voriya.framework.utils.RedisKeyUtil;
+import cn.voriya.framework.cache.RedisKeyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Arrays;
 
@@ -20,8 +19,11 @@ import java.util.Arrays;
 @Configuration
 @Slf4j
 public class LoginInterceptor {
-    @Autowired
-    private Cache cache;
+    private final RedisTemplate<String, String> template;
+
+    public LoginInterceptor(RedisTemplate<String, String> template) {
+        this.template = template;
+    }
 
     @Before("@annotation(loginAnnotation)")
     public void interceptor(Login loginAnnotation) {
@@ -33,7 +35,7 @@ public class LoginInterceptor {
             AuthUser authUser = UserContext.getCurrentUser();
             if (authUser == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
             String loginKey = RedisKeyUtil.loginKey(authUser);
-            String cache_uuid = (String) cache.get(loginKey);
+            String cache_uuid = template.opsForValue().get(loginKey);
             //用户未登录
             if (uuid == null || cache_uuid == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
             //判断用户身份类型

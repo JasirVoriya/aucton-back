@@ -1,19 +1,18 @@
 package cn.voriya.framework.security.interceptors;
 
 
-import cn.voriya.framework.cache.Cache;
 import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.exception.ServiceException;
 import cn.voriya.framework.security.AuthUser;
 import cn.voriya.framework.security.annotations.Logout;
 import cn.voriya.framework.security.context.UserContext;
 import cn.voriya.framework.security.enums.UserEnums;
-import cn.voriya.framework.utils.RedisKeyUtil;
+import cn.voriya.framework.cache.RedisKeyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Arrays;
 
@@ -21,8 +20,11 @@ import java.util.Arrays;
 @Configuration
 @Slf4j
 public class LogoutInterceptor {
-    @Autowired
-    private Cache cache;
+    private final RedisTemplate<String, String> template;
+
+    public LogoutInterceptor(RedisTemplate<String, String> template) {
+        this.template = template;
+    }
 
     @Before("@annotation(logout)")
     public void interceptor(Logout logout) {
@@ -33,8 +35,8 @@ public class LogoutInterceptor {
         if (Arrays.stream(userEnums).noneMatch(role -> role == authUser.getRole()))
             throw new ServiceException(ResultCode.USER_NOT_LOGIN);
         String loginKey = RedisKeyUtil.loginKey(authUser);
-        String uuid = (String) cache.get(loginKey);
+        String uuid = template.opsForValue().get(loginKey);
         if (uuid == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
-        cache.remove(loginKey);
+        template.delete(loginKey);
     }
 }

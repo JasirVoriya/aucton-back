@@ -1,7 +1,6 @@
 package cn.voriya.framework.email;
 
-import cn.voriya.framework.cache.CachePrefix;
-import cn.voriya.framework.cache.impl.RedisCache;
+import cn.voriya.framework.cache.RedisKeyUtil;
 import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.exception.ServiceException;
 import cn.voriya.framework.security.context.UserContext;
@@ -11,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class EmailService {
 
-    private final RedisCache cache;
+    private final RedisTemplate<String, String> template;
     private final EmailUtil emailUtil;
-    public EmailService(RedisCache cache, EmailUtil emailUtil) {
-        this.cache = cache;
+    public EmailService(RedisTemplate<String, String> template, EmailUtil emailUtil) {
+        this.template = template;
         this.emailUtil = emailUtil;
     }
 
@@ -81,7 +81,7 @@ public class EmailService {
         //发送邮件
         emailUtil.sendHtmlEmailAsync(email, title, htmlContext);
         //缓存中写入要验证的信息
-        cache.put(cacheKey(verificationEnums, uuid, email), code, 5L, TimeUnit.MINUTES);
+        template.opsForValue().set(RedisKeyUtil.emailCodeKey(verificationEnums, email,uuid), code, 5L, TimeUnit.MINUTES);
     }
 
 
@@ -96,26 +96,14 @@ public class EmailService {
     public boolean verifyCode(String email, VerificationEnums verificationEnums, String code) {
         String uuid = UserContext.getCurrentUserUUID();
         if (uuid == null) throw new ServiceException(ResultCode.UUID_NOT_FIND);
-        Object val = cache.get(cacheKey(verificationEnums, uuid, email));
-        if (code.equals(val)) {
+        //从缓存中获取验证码
+        String cacheCode = template.opsForValue().get(RedisKeyUtil.emailCodeKey(verificationEnums, uuid, email));
+        if (code.equals(cacheCode)) {
             //校验之后，删除
-            cache.remove(cacheKey(verificationEnums, uuid, email));
+            template.delete(RedisKeyUtil.emailCodeKey(verificationEnums, uuid, email));
             return true;
         } else {
             return false;
         }
-
-    }
-
-    /**
-     * 生成缓存key，邮箱验证码的缓存key都统一使用该方法生成
-     *
-     * @param verificationEnums 验证码的使用场景，如用来找回密码，用来登录等等
-     * @param uuid              客户端的uuid
-     * @param email             邮箱
-     * @return 生成的缓存key
-     */
-    private static String cacheKey(VerificationEnums verificationEnums, String uuid, String email) {
-        return CachePrefix.EMAIL_CODE.getPrefix() + verificationEnums.name() + uuid + email;
     }
 }
