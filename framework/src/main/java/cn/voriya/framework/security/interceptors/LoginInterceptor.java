@@ -37,7 +37,7 @@ public class LoginInterceptor {
             String loginKey = RedisKeyUtil.loginKey(authUser);
             String cache_uuid = template.opsForValue().get(loginKey);
             //用户未登录
-            if (uuid == null || cache_uuid == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+            if (cache_uuid == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
             //判断用户身份类型
             if (Arrays.stream(userEnums).noneMatch(role -> role == authUser.getRole()))
                 throw new ServiceException(ResultCode.USER_NOT_LOGIN);

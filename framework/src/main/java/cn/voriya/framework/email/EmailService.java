@@ -72,7 +72,6 @@ public class EmailService {
     public void sendCode(String email, String title, VerificationEnums verificationEnums) {
 
         String uuid = UserContext.getCurrentUserUUID();
-        if (uuid == null) throw new ServiceException(ResultCode.UUID_NOT_FIND);
         //验证码
         String code = CommonUtil.getRandomNum();
         String context = String.valueOf(verificationEnums);
@@ -96,7 +95,6 @@ public class EmailService {
      */
     public boolean verifyCode(String email, VerificationEnums verificationEnums, String code) {
         String uuid = UserContext.getCurrentUserUUID();
-        if (uuid == null) throw new ServiceException(ResultCode.UUID_NOT_FIND);
         //从缓存中获取验证码
         String cacheCode = template.opsForValue().get(RedisKeyUtil.emailCodeKey(verificationEnums, uuid, email));
         if (code.equals(cacheCode)) {

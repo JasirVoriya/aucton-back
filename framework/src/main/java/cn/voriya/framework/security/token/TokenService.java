@@ -34,13 +34,12 @@ public class TokenService {
      */
     public Token createToken(AuthUser authUser) {
         String uuid = UserContext.getCurrentUserUUID();
-        if(!StringUtils.hasLength(uuid))throw new ServiceException(ResultCode.UUID_NOT_FIND);
         String loginKey = RedisKeyUtil.loginKey(authUser);
         //获取是否长期有效的token
         boolean longTerm = authUser.getLongTerm();
         //访问token
         String accessToken = TokenUtil.createToken(authUser, tokenProperties.getTokenExpireTime());
-        //将用户的登录设备存入缓存
+        //将用户的登录设备存入缓存，用于判断用户是否被挤掉或者退出登录
         template.opsForValue().set(loginKey, uuid, tokenProperties.getTokenExpireTime(), TimeUnit.HOURS);
         //刷新token生成策略：如果是长时间有效的token（用于app），则默认15天有效期刷新token。如果是普通用户登录，则刷新token为普通token2倍数
         Long expireTime = longTerm ? 15 * 24 * 60L : tokenProperties.getTokenExpireTime() * 2;
