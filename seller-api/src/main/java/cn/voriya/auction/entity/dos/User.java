@@ -1,10 +1,10 @@
 package cn.voriya.auction.entity.dos;
 
 import cn.voriya.framework.mybatis.BaseEntity;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * <p>
@@ -21,6 +21,7 @@ public class User extends BaseEntity {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     private String email;
