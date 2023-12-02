@@ -1,17 +1,15 @@
 package cn.voriya.framework.security;
+
 import cn.voriya.framework.security.enums.UserEnums;
 import lombok.Data;
-
-import java.io.Serializable;
+import lombok.NoArgsConstructor;
 
 /**
  *
  */
 @Data
-public class AuthUser implements Serializable {
-
-    private static final long serialVersionUID = 582441893336003319L;
-
+@NoArgsConstructor
+public class AuthUser {
     /**
      * 用户名
      */
