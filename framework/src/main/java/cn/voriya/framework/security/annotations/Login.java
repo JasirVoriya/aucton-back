@@ -13,11 +13,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Login {
-    boolean value() default false;
+    boolean value() default true;
 
     /**
-     * 用户的登录身份
-     * @return
+     * @return 用户的登录身份
      */
     UserEnums[] role() default {UserEnums.USER};
 }
