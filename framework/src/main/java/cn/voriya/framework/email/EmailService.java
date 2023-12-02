@@ -77,8 +77,8 @@ public class EmailService {
         //生成html内容
         String htmlContext = makeHtmlContext(code, context);
         if (htmlContext == null) throw new ServiceException(ResultCode.EMAIL_SEND_ERROR);
-        //发送邮件
-        emailUtil.sendHtmlEmailAsync(email, title, htmlContext);
+        //发送邮件，为了方便测试，暂时注释掉
+//        emailUtil.sendHtmlEmailAsync(email, title, htmlContext);
         //缓存中写入要验证的信息
         template.opsForValue().set(RedisKeyUtil.emailCodeKey(verificationEnums, email,uuid), code, 5L, TimeUnit.MINUTES);
     }

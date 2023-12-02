@@ -1,4 +1,4 @@
-package cn.voriya.seller.controller.common;
+package cn.voriya.auction.controller.common;
 
 import cn.voriya.framework.email.EmailService;
 import cn.voriya.framework.entity.vo.ResultMessage;

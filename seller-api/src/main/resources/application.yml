@@ -2,10 +2,10 @@ spring:
   application:
     name: seller-api
   datasource:
-    url: jdbc:mysql://localhost:3306/kara_shop?characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://localhost:3306/auction_platform?characterEncoding=utf8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password:
+    password: root
   mail:
     username: 1838566218@qq.com
     password: nlyxamscvrbaeacf
@@ -25,3 +25,8 @@ spring:
     redis:
       host: localhost
       port: 6379
+# mybatis-plus配置
+mybatis-plus:
+  global-config:
+    db-config:
+      table-prefix: tb_

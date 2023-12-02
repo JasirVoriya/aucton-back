@@ -58,7 +58,6 @@ public class TokenService {
      */
     public Token refreshToken(String oldRefreshToken) {
         AuthUser authUser = TokenUtil.parseToken(oldRefreshToken);
-
         if (authUser == null) throw new ServiceException(ResultCode.USER_AUTH_EXPIRED);
         return createToken(authUser);
     }

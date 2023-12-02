@@ -26,7 +26,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <mysql.version>8.0.33</mysql.version>
-        <mybaits-plus.version>3.5.3.1</mybaits-plus.version>
+        <mybaits-plus.version>3.5.4.1</mybaits-plus.version>
+        <mybatis.spring>3.0.3</mybatis.spring>
 
         <jjwt.version>0.11.2</jjwt.version>
         <jsoup.servion>1.15.3</jsoup.servion>
@@ -45,6 +46,21 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybaits-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-spring</artifactId>
+                <version>${mybatis.spring}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-generator</artifactId>
+                <version>${mybaits-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.freemarker</groupId>
+                <artifactId>freemarker</artifactId>
+                <version> 2.3.31</version>
             </dependency>
             <dependency>
                 <groupId>mysql</groupId>
