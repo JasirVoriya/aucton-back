@@ -53,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public Token codeLogin(String email, String code) {
         //校验验证码
-        if(emailService.verifyCode(email, VerificationEnums.LOGIN,code)){
+        if(!emailService.verifyCode(email, VerificationEnums.LOGIN,code)){
             throw new ServiceException(ResultCode.VERIFICATION_EMAIL_CHECKED_ERROR);
         }
         //根据邮箱查出用户信息
@@ -61,11 +61,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         wrapper.eq("email",email);
         User user = this.getOne(wrapper);
         if (user == null){
-            //用户不存在，注册
-            user = new User();
-            user.setEmail(email);
-            this.save(user);
+            //用户不存在,注册
+            return register(email);
         }
+        //生成token
+        return userTokenGenerator.createToken(user,false);
+    }
+    private Token register(String email){
+        final User user = new User();
+        user.setEmail(email);
+        //保存用户信息,返回主键
+        this.save(user);
+        //设置用户名
+        user.setUsername("用户"+user.getId());
+        //更新用户信息
+        this.updateById(user);
         //生成token
         return userTokenGenerator.createToken(user,false);
     }

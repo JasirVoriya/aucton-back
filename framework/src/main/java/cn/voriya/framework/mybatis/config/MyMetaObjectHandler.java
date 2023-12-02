@@ -16,15 +16,15 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         AuthUser authUser = UserContext.getCurrentUser();
-        if (authUser != null) {
-//            this.strictInsertFill(metaObject, "createBy", authUser::getUsername, String.class);
-            this.setFieldValByName("createBy", authUser.getUsername(), metaObject);
-        } else {
-            this.strictInsertFill(metaObject, "createBy", () -> "SYSTEM", String.class);
-        }
+        this.setFieldValByName("createBy", authUser != null ? authUser.getUsername() : "SYSTEM", metaObject);
+        this.setFieldValByName("updateBy", authUser != null ? authUser.getUsername() : "SYSTEM", metaObject);
         //有创建时间字段，切字段值为空
         if (metaObject.hasGetter("createTime")) {
             this.setFieldValByName("createTime", LocalDateTime.now(), metaObject);
+        }
+        //有更新时间字段
+        if (metaObject.hasGetter("updateTime")) {
+            this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
         }
         //有值，则写入
         if (metaObject.hasGetter("deleteFlag")) {
@@ -47,6 +47,9 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         } else {
             this.setFieldValByName("updateBy", "SYSTEM", metaObject);
         }
-        this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        //有更新时间字段
+        if (metaObject.hasGetter("updateTime")) {
+            this.setFieldValByName("updateTime", LocalDateTime.now(), metaObject);
+        }
     }
 }

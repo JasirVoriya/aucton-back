@@ -95,10 +95,11 @@ public class EmailService {
     public boolean verifyCode(String email, VerificationEnums verificationEnums, String code) {
         String uuid = UserContext.getCurrentUserUUID();
         //从缓存中获取验证码
-        String cacheCode = template.opsForValue().get(RedisKeyUtil.emailCodeKey(verificationEnums, uuid, email));
+        final String codeKey = RedisKeyUtil.emailCodeKey(verificationEnums, email, uuid);
+        String cacheCode = template.opsForValue().get(codeKey);
         if (code.equals(cacheCode)) {
             //校验之后，删除
-            template.delete(RedisKeyUtil.emailCodeKey(verificationEnums, uuid, email));
+            template.delete(codeKey);
             return true;
         } else {
             return false;
