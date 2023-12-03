@@ -1,5 +1,6 @@
 package cn.voriya.auction.utils;
 
+import cn.voriya.framework.mybatis.BaseEntity;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -64,17 +65,17 @@ public class MyBatisPlusFastAutoGenerator {
                             .entity("entity.dos") // 设置实体类包名
                             .pathInfo(Collections.singletonMap(OutputFile.xml, "D:/Code/GraduationDesign/auction-back/seller-api/src/main/resources/mapper")); // 设置mapperXml生成路径
                 })
-                .strategyConfig(builder -> {
-                    builder.addInclude() // 设置需要生成的表名
+                .strategyConfig((scanner,builder) -> {
+                    builder.addInclude(getTables(scanner.apply("请输入表名，多个英文逗号分隔？所有输入 all"))) // 设置需要生成的表名
                             .addTablePrefix("tb_"); // 设置过滤表前缀
                     builder.entityBuilder() // 设置实体类配置
                             .enableLombok() // 开启lombok
                             .disableSerialVersionUID()// 关闭序列化id
-                            .idType(IdType.AUTO) // 设置id类型
+                            .superClass(BaseEntity.class)
                             .enableFileOverride(); // 开启文件覆盖
-                    builder.controllerBuilder().enableFileOverride();
-                    builder.mapperBuilder().enableFileOverride();
-                    builder.serviceBuilder().enableFileOverride();
+                    builder.controllerBuilder();
+                    builder.mapperBuilder();
+                    builder.serviceBuilder();
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();

@@ -1,9 +1,8 @@
 package cn.voriya.auction.entity.dos;
 
+import cn.voriya.auction.entity.enums.FileType;
 import cn.voriya.framework.mybatis.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.time.LocalDateTime;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,26 +18,15 @@ import lombok.Setter;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class User extends BaseEntity {
-
-    private String username;
-
-    private String password;
-
-    private String email;
+public class File extends BaseEntity {
 
     /**
-     * 会员生日
+     * 文件二进制
      */
-    private LocalDateTime birthday;
+    private byte[] file;
 
     /**
-     * 会员头像链接
+     * 文件类型
      */
-    private String avatar;
-
-    /**
-     * 会员性别，0未知，1男，2女
-     */
-    private Integer sex;
+    private FileType type;
 }

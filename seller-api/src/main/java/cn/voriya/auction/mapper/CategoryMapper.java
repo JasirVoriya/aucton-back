@@ -1,6 +1,6 @@
 package cn.voriya.auction.mapper;
 
-import cn.voriya.auction.entity.dos.User;
+import cn.voriya.auction.entity.dos.Category;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author JasirVoriya
  * @since 2023-12-03
  */
-public interface UserMapper extends BaseMapper<User> {
+public interface CategoryMapper extends BaseMapper<Category> {
 
 }
