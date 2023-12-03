@@ -2,6 +2,7 @@ package cn.voriya.auction.service;
 
 import cn.voriya.auction.entity.dos.File;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IFileService extends IService<File> {
 
+    Long uploadFile(MultipartFile file);
 }

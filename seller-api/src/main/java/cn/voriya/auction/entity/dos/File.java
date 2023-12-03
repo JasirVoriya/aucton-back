@@ -2,6 +2,7 @@ package cn.voriya.auction.entity.dos;
 
 import cn.voriya.auction.entity.enums.FileType;
 import cn.voriya.framework.mybatis.BaseEntity;
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -29,4 +30,8 @@ public class File extends BaseEntity {
      * 文件类型
      */
     private FileType type;
+    /**
+     * 文件名
+     */
+    private String filename;
 }

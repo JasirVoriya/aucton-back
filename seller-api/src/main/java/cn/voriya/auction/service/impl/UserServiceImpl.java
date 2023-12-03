@@ -25,10 +25,12 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     private final UserTokenGenerator userTokenGenerator;
     private final EmailService emailService;
+    private final PasswordService passwordService;
 
-    public UserServiceImpl(UserTokenGenerator userTokenGenerator, EmailService emailService) {
+    public UserServiceImpl(UserTokenGenerator userTokenGenerator, EmailService emailService, PasswordService passwordService) {
         this.userTokenGenerator = userTokenGenerator;
         this.emailService = emailService;
+        this.passwordService = passwordService;
     }
 
 
@@ -42,7 +44,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             //用户不存在
             throw new ServiceException(ResultCode.USER_NOT_EXIST);
         }
-        if (!user.getPassword().equals(password)){
+        if (!passwordService.checkPassword(password,user.getPassword())){
             //密码错误
             throw new ServiceException(ResultCode.USER_PASSWORD_ERROR);
         }
@@ -67,6 +69,26 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         //生成token
         return userTokenGenerator.createToken(user,false);
     }
+
+    @Override
+    public void updatePassword(String email, String code, String password) {
+        //校验验证码
+        if(!emailService.verifyCode(email, VerificationEnums.UPDATE_PASSWORD,code)){
+            throw new ServiceException(ResultCode.VERIFICATION_EMAIL_CHECKED_ERROR);
+        }
+        //根据邮箱查出用户信息
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("email",email);
+        User user = this.getOne(wrapper);
+        if (user == null){
+            //用户不存在
+            throw new ServiceException(ResultCode.USER_NOT_EXIST);
+        }
+        //更新密码,并加密
+        user.setPassword(passwordService.encodePassword(password));
+        this.updateById(user);
+    }
+
     private Token register(String email){
         final User user = new User();
         user.setEmail(email);

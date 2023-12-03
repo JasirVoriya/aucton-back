@@ -43,4 +43,12 @@ public class PassportController {
         final Token token = userService.codeLogin(email, code);
         return ResultUtil.data(token);
     }
+    /**
+     * 修改密码
+     */
+    @PostMapping("password")
+    public ResultMessage<Boolean> updatePassword(String email, String code, String password) {
+        userService.updatePassword(email, code, password);
+        return ResultUtil.success();
+    }
 }

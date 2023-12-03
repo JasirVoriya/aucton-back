@@ -4,6 +4,7 @@ import cn.voriya.framework.mybatis.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class User extends BaseEntity {
 
     private String username;
 
+    @JsonIgnore
     private String password;
 
     private String email;

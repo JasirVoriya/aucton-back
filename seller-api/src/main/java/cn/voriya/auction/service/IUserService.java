@@ -17,4 +17,6 @@ public interface IUserService extends IService<User> {
     Token passwordLogin(String account, String password);
 
     Token codeLogin(String email, String code);
+
+    void updatePassword(String email, String code, String password);
 }

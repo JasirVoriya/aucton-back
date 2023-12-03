@@ -1,6 +1,10 @@
 spring:
   application:
     name: seller-api
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 20MB
   datasource:
     url: jdbc:mysql://localhost:3306/auction_platform?characterEncoding=utf8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -27,6 +31,8 @@ spring:
       port: 6379
 # mybatis-plus配置
 mybatis-plus:
+  configuration:
+    use-generated-keys: true
   global-config:
     db-config:
       table-prefix: tb_
