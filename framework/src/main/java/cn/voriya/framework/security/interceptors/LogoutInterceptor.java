@@ -29,14 +29,16 @@ public class LogoutInterceptor {
     @Before("@annotation(logout)")
     public void interceptor(Logout logout) {
         AuthUser authUser = UserContext.getCurrentUser();
+        final String uuid = UserContext.getCurrentUserUUID();
         if (authUser == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
         //判断用户身份类型
         UserEnums[] userEnums = logout.role();
         if (Arrays.stream(userEnums).noneMatch(role -> role == authUser.getRole()))
             throw new ServiceException(ResultCode.USER_NOT_LOGIN);
         String loginKey = RedisKeyUtil.loginKey(authUser);
-        String uuid = template.opsForValue().get(loginKey);
-        if (uuid == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+        String cachedUuid = template.opsForValue().get(loginKey);
+        if (cachedUuid == null) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
+        if (!cachedUuid.equals(uuid)) throw new ServiceException(ResultCode.USER_NOT_LOGIN);
         template.delete(loginKey);
     }
 }
