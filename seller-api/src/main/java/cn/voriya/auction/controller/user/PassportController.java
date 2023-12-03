@@ -2,9 +2,12 @@ package cn.voriya.auction.controller.user;
 
 import cn.voriya.auction.service.IUserService;
 import cn.voriya.framework.entity.vo.ResultMessage;
+import cn.voriya.framework.security.annotations.Login;
+import cn.voriya.framework.security.annotations.Logout;
 import cn.voriya.framework.security.token.Token;
 import cn.voriya.framework.utils.ResultUtil;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +21,14 @@ public class PassportController {
         this.userService = userService;
     }
 
+    /**
+     * 退出登录
+     */
+    @PostMapping("logout")
+    @Logout
+    public ResultMessage<Boolean> logout() {
+        return ResultUtil.success();
+    }
     /**
      * 密码登录
      *
@@ -43,12 +54,34 @@ public class PassportController {
         final Token token = userService.codeLogin(email, code);
         return ResultUtil.data(token);
     }
+
     /**
-     * 修改密码
+     * 验证码修改密码
      */
-    @PostMapping("password")
+    @PutMapping("password")
     public ResultMessage<Boolean> updatePassword(String email, String code, String password) {
         userService.updatePassword(email, code, password);
+        return ResultUtil.success();
+    }
+    /**
+     * 修改邮箱
+     *
+     * @param email 新邮箱
+     * @param code  验证码
+     */
+    @PutMapping("email")
+    @Login
+    public ResultMessage<Boolean> updateEmail(String email, String code) {
+        userService.updateEmail(email, code);
+        return ResultUtil.success();
+    }
+    /**
+     * 修改用户名
+     */
+    @PutMapping("username")
+    @Login
+    public ResultMessage<Boolean> updateUsername(String username) {
+        userService.updateUsername(username);
         return ResultUtil.success();
     }
 }

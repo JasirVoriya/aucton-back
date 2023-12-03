@@ -34,4 +34,13 @@ public class EmailController {
         emailService.sendCode(email,"修改密码", VerificationEnums.UPDATE_PASSWORD);
         return ResultUtil.success();
     }
+    /**
+     * 修改邮箱
+     */
+    @AccessLimit(seconds = 60, maxCount = 1)
+    @GetMapping("email/{email}")
+    public ResultMessage<Boolean> getEmailCode(@PathVariable String email){
+        emailService.sendCode(email,"修改邮箱", VerificationEnums.UPDATE_EMAIL);
+        return ResultUtil.success();
+    }
 }

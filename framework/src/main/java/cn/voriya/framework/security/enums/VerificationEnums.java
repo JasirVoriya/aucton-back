@@ -17,7 +17,8 @@ public enum VerificationEnums {
     REGISTER,
     FIND_USER,
     UPDATE_PASSWORD,
-    WALLET_PASSWORD;
+    WALLET_PASSWORD,
+    UPDATE_EMAIL;
 }
 
 

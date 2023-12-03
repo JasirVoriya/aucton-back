@@ -1,12 +1,16 @@
 package cn.voriya.auction.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import cn.voriya.auction.entity.dos.User;
+import cn.voriya.auction.entity.vos.UserVO;
 import cn.voriya.auction.mapper.UserMapper;
 import cn.voriya.auction.service.IUserService;
 import cn.voriya.auction.utils.UserTokenGenerator;
 import cn.voriya.framework.email.EmailService;
 import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.exception.ServiceException;
+import cn.voriya.framework.security.context.UserContext;
 import cn.voriya.framework.security.enums.VerificationEnums;
 import cn.voriya.framework.security.token.Token;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -86,6 +90,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         //更新密码,并加密
         user.setPassword(passwordService.encodePassword(password));
+        this.updateById(user);
+    }
+
+    @Override
+    public void updateEmail(String email, String code) {
+        //获取老邮箱
+        final Long id = UserContext.getCurrentUser().getId();
+        final User user = this.getById(id);
+        //校验验证码
+        if(!emailService.verifyCode(user.getEmail(), VerificationEnums.UPDATE_EMAIL,code)){
+            throw new ServiceException(ResultCode.VERIFICATION_EMAIL_CHECKED_ERROR);
+        }
+        //更新邮箱
+        user.setEmail(email);
+        this.updateById(user);
+    }
+
+    @Override
+    public void updateUsername(String username) {
+        final Long id = UserContext.getCurrentUser().getId();
+        final User user = this.getById(id);
+        //更新用户名
+        user.setUsername(username);
         this.updateById(user);
     }
 
