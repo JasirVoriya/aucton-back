@@ -1,5 +1,4 @@
-import cn.voriya.auction.entity.dos.File;
-import cn.voriya.auction.entity.enums.FileType;
+import cn.voriya.framework.entity.dos.File;
 import cn.voriya.framework.utils.JsonUtil;
 import org.junit.jupiter.api.Test;
 

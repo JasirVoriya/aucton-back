@@ -55,7 +55,18 @@ public enum ResultCode {
      * 验证码
      */
     VERIFICATION_EMAIL_CHECKED_ERROR(40001, "邮箱验证码错误，请重新校验"),
-    EMAIL_SEND_ERROR(40002, "邮箱验证码发送失败，请稍后重试");
+    EMAIL_SEND_ERROR(40002, "邮箱验证码发送失败，请稍后重试"),
+
+    /**
+     * 分类
+     */
+    PARENT_CATEGORY_NOT_EXIST(50001, "父分类不存在"),
+    CATEGORY_HAS_CHILDREN(50002, "该分类有子分类，不能删除"), CATEGORY_NAME_EXIST(50003, "该分类名已存在"),
+
+    /**
+     * 商品
+     */
+    GOODS_NOT_EXIST(60001,"商品不存在" );
 
 
     private final Integer code;

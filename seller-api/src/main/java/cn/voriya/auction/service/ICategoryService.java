@@ -1,7 +1,10 @@
 package cn.voriya.auction.service;
 
 import cn.voriya.auction.entity.dos.Category;
+import cn.voriya.auction.entity.vos.CategoryVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICategoryService extends IService<Category> {
 
+    List<CategoryVO> getTopCategory();
+
+    List<CategoryVO> getAllCategory();
+
+    List<CategoryVO> getChildrenCategory(Long id);
 }

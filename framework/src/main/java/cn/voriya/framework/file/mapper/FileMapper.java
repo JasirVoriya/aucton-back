@@ -1,6 +1,7 @@
-package cn.voriya.auction.mapper;
+package cn.voriya.framework.file.mapper;
 
-import cn.voriya.auction.entity.dos.File;
+
+import cn.voriya.framework.file.entity.dos.File;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

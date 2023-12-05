@@ -1,13 +1,9 @@
-package cn.voriya.auction.entity.dos;
+package cn.voriya.framework.file.entity.dos;
 
-import cn.voriya.auction.entity.enums.FileType;
+import cn.voriya.framework.file.entity.enums.FileType;
 import cn.voriya.framework.mybatis.BaseEntity;
-import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * <p>

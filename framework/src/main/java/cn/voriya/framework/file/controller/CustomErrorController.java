@@ -1,4 +1,4 @@
-package cn.voriya.framework.controller;
+package cn.voriya.framework.file.controller;
 
 import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.entity.vo.ResultMessage;

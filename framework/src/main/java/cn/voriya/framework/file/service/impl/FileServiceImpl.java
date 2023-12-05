@@ -1,9 +1,9 @@
-package cn.voriya.auction.service.impl;
+package cn.voriya.framework.file.service.impl;
 
-import cn.voriya.auction.entity.dos.File;
-import cn.voriya.auction.entity.enums.FileType;
-import cn.voriya.auction.mapper.FileMapper;
-import cn.voriya.auction.service.IFileService;
+import cn.voriya.framework.file.entity.dos.File;
+import cn.voriya.framework.file.entity.enums.FileType;
+import cn.voriya.framework.file.mapper.FileMapper;
+import cn.voriya.framework.file.service.IFileService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;

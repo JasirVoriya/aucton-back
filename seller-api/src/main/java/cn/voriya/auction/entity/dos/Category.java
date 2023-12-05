@@ -1,8 +1,13 @@
 package cn.voriya.auction.entity.dos;
 
 import cn.voriya.framework.mybatis.BaseEntity;
+import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * <p>
@@ -10,7 +15,7 @@ import lombok.EqualsAndHashCode;
  * </p>
  *
  * @author JasirVoriya
- * @since 2023-12-03
+ * @since 2023-12-04
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -30,4 +35,13 @@ public class Category extends BaseEntity {
      * 排序值
      */
     private Integer sortOrder;
+
+    /**
+     * 层级
+     */
+    private Integer level;
+    /**
+     * 是否启用
+     */
+    private Boolean enable;
 }

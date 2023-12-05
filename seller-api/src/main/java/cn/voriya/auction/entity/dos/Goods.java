@@ -1,16 +1,21 @@
 package cn.voriya.auction.entity.dos;
 
+import cn.voriya.auction.entity.enums.GoodsType;
 import cn.voriya.framework.mybatis.BaseEntity;
+import cn.voriya.framework.mybatis.ListLongToStringSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <p>
@@ -22,6 +27,7 @@ import lombok.Setter;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@TableName(autoResultMap = true)
 public class Goods extends BaseEntity {
 
     /**
@@ -33,8 +39,9 @@ public class Goods extends BaseEntity {
     /**
      * 分类ID
      */
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long categoryId;
+    @TableField(typeHandler = JacksonTypeHandler.class)
+    @JsonSerialize(using = ListLongToStringSerializer.class)
+    private List<Long> categoryIds;
 
     /**
      * 商品名称
@@ -45,12 +52,6 @@ public class Goods extends BaseEntity {
      * 商品详情
      */
     private String intro;
-
-    /**
-     * 商品价格
-     */
-    private Double price;
-
     /**
      * 封面路径
      */
@@ -74,20 +75,30 @@ public class Goods extends BaseEntity {
     /**
      * 开始时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime startTime;
 
     /**
      * 结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endTime;
-
-    private Boolean deleteFlag;
-
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
-
-    private String createBy;
-
-    private String updateBy;
+    /**
+     * 浏览量
+     */
+    private Integer view;
+    /**
+     * 报名人数
+     */
+    private Integer registration;
+    /**
+     * 当前价格
+     */
+    private BigDecimal latestPrice;
+    /**
+     * 商品类型
+     */
+    private GoodsType goodsType;
 }

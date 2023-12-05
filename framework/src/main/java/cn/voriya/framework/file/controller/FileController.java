@@ -1,14 +1,14 @@
-package cn.voriya.auction.controller.common;
+package cn.voriya.framework.file.controller;
 
-import cn.voriya.auction.entity.dos.File;
-import cn.voriya.auction.service.IFileService;
+
 import cn.voriya.framework.entity.enums.ResultCode;
 import cn.voriya.framework.entity.vo.ResultMessage;
 import cn.voriya.framework.exception.ServiceException;
+import cn.voriya.framework.file.entity.dos.File;
 import cn.voriya.framework.security.annotations.Login;
 import cn.voriya.framework.security.enums.UserEnums;
+import cn.voriya.framework.file.service.IFileService;
 import cn.voriya.framework.utils.ResultUtil;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author JasirVoriya
@@ -35,16 +35,17 @@ public class FileController {
     }
 
     @PostMapping("upload")
-    @Login(role = {UserEnums.USER,UserEnums.MANAGER})
+    @Login(role = {UserEnums.USER, UserEnums.MANAGER})
     public ResultMessage<String> uploadFile(@RequestParam("file") MultipartFile file) {
         final Long id = fileService.uploadFile(file);
-        return ResultUtil.data("/file/download/"+id);
+        return ResultUtil.data("" + id);
     }
+
     @SneakyThrows
     @GetMapping("download/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
         final File file = fileService.getById(id);
-        if(file == null){
+        if (file == null) {
             throw new ServiceException(ResultCode.NOT_FOUND);
         }
         HttpHeaders headers = new HttpHeaders();

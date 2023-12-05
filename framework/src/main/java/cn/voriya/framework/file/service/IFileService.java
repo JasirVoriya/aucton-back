@@ -1,6 +1,7 @@
-package cn.voriya.auction.service;
+package cn.voriya.framework.file.service;
 
-import cn.voriya.auction.entity.dos.File;
+
+import cn.voriya.framework.file.entity.dos.File;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
