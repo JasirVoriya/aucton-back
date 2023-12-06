@@ -66,7 +66,30 @@ public enum ResultCode {
     /**
      * 商品
      */
-    GOODS_NOT_EXIST(60001,"商品不存在" );
+    GOODS_NOT_EXIST(60001, "商品不存在"),
+    GOODS_IS_NOT_ON_SALE(60002, "拍卖已结束"),
+    GOODS_TIME_ERROR(60003, "商品时间设置错误"),
+    GOODS_START_TIME_ERROR(60004, "开始时间必须设置在一小时之后"),
+
+    /**
+     * 参拍信息
+     */
+    PARTICIPATE_BID_INFO_ALREADY_EXIST(70001, "您已经报名成功，请尽快支付"),
+    PARTICIPATE_BID_INFO_ALREADY_PAY(70002, "您已经报名并支付成功，请勿重复报名"),
+    PARTICIPATE_SUCCESS_BUT_PAY_FAIL(70003, "您已报名成功，但是支付失败，请尽快完成支付"),
+    PARTICIPATE_BID_INFO_NOT_EXIST(70004, "参拍人信息错误"),
+    PARTICIPATE_IS_SELLER(70005, "不能参与自己发布的拍卖"),
+
+    /**
+     * 支付
+     */
+    BALANCE_NOT_ENOUGH(80001, "余额不足"),
+    NOT_PAY_SELF(80001, "不能给自己转账"),
+
+    /**
+     * 出价
+     */
+    BID_PRICE_TOO_LOW(90001, "出价不能低于目前最高价加最低出价");
 
 
     private final Integer code;

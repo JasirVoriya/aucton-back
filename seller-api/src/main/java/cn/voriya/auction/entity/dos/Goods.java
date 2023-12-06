@@ -101,4 +101,12 @@ public class Goods extends BaseEntity {
      * 商品类型
      */
     private GoodsType goodsType;
+    /**
+     * 状态
+     * 0: 未设置
+     * 1: 未开始
+     * 2: 进行中
+     * 3: 已结束
+     */
+    private Integer status;
 }

@@ -2,6 +2,8 @@ package cn.voriya.auction.entity.dos;
 
 import cn.voriya.framework.mybatis.BaseEntity;
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,4 +45,9 @@ public class User extends BaseEntity {
      * 会员性别，0未知，1男，2女
      */
     private Integer sex;
+
+    /**
+     * 账户余额
+     */
+    private BigDecimal money;
 }

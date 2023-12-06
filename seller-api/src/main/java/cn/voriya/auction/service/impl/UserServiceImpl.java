@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author JasirVoriya
@@ -42,49 +42,49 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Token passwordLogin(String account, String password) {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         //根据用户名或者邮箱查出用户信息
-        wrapper.eq("username",account).or().eq("email",account);
+        wrapper.eq("username", account).or().eq("email", account);
         User user = this.getOne(wrapper);
-        if (user == null){
+        if (user == null) {
             //用户不存在
             throw new ServiceException(ResultCode.USER_NOT_EXIST);
         }
-        if (!passwordService.checkPassword(password,user.getPassword())){
+        if (!passwordService.checkPassword(password, user.getPassword())) {
             //密码错误
             throw new ServiceException(ResultCode.USER_PASSWORD_ERROR);
         }
         //生成token
-        return userTokenGenerator.createToken(user,false);
+        return userTokenGenerator.createToken(user, false);
     }
 
     @Override
     public Token codeLogin(String email, String code) {
         //校验验证码
-        if(!emailService.verifyCode(email, VerificationEnums.LOGIN,code)){
+        if (!emailService.verifyCode(email, VerificationEnums.LOGIN, code)) {
             throw new ServiceException(ResultCode.VERIFICATION_EMAIL_CHECKED_ERROR);
         }
         //根据邮箱查出用户信息
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("email",email);
+        wrapper.eq("email", email);
         User user = this.getOne(wrapper);
-        if (user == null){
+        if (user == null) {
             //用户不存在,注册
             return register(email);
         }
         //生成token
-        return userTokenGenerator.createToken(user,false);
+        return userTokenGenerator.createToken(user, false);
     }
 
     @Override
     public void updatePassword(String email, String code, String password) {
         //校验验证码
-        if(!emailService.verifyCode(email, VerificationEnums.UPDATE_PASSWORD,code)){
+        if (!emailService.verifyCode(email, VerificationEnums.UPDATE_PASSWORD, code)) {
             throw new ServiceException(ResultCode.VERIFICATION_EMAIL_CHECKED_ERROR);
         }
         //根据邮箱查出用户信息
         QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("email",email);
+        wrapper.eq("email", email);
         User user = this.getOne(wrapper);
-        if (user == null){
+        if (user == null) {
             //用户不存在
             throw new ServiceException(ResultCode.USER_NOT_EXIST);
         }
@@ -99,7 +99,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         final Long id = UserContext.getCurrentUser().getId();
         final User user = this.getById(id);
         //校验验证码
-        if(!emailService.verifyCode(user.getEmail(), VerificationEnums.UPDATE_EMAIL,code)){
+        if (!emailService.verifyCode(user.getEmail(), VerificationEnums.UPDATE_EMAIL, code)) {
             throw new ServiceException(ResultCode.VERIFICATION_EMAIL_CHECKED_ERROR);
         }
         //更新邮箱
@@ -111,21 +111,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public void updateUsername(String username) {
         final Long id = UserContext.getCurrentUser().getId();
         final User user = this.getById(id);
+        final User one = getOne(new QueryWrapper<User>().eq("username", username));
+        if (one != null) throw new ServiceException(ResultCode.USER_NAME_EXIST);
         //更新用户名
         user.setUsername(username);
         this.updateById(user);
     }
 
-    private Token register(String email){
+    private Token register(String email) {
         final User user = new User();
         user.setEmail(email);
         //保存用户信息,返回主键
         this.save(user);
         //设置用户名
-        user.setUsername("用户"+user.getId());
+        user.setUsername("用户" + user.getId());
         //更新用户信息
         this.updateById(user);
         //生成token
-        return userTokenGenerator.createToken(user,false);
+        return userTokenGenerator.createToken(user, false);
     }
 }
