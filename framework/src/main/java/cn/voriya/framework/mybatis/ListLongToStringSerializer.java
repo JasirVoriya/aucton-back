@@ -16,7 +16,6 @@ public class ListLongToStringSerializer extends JsonSerializer<List<Long>> {
         List<String> stringList = longList.stream()
                 .map(String::valueOf)
                 .collect(Collectors.toList());
-
         jsonGenerator.writeObject(stringList);
     }
 }

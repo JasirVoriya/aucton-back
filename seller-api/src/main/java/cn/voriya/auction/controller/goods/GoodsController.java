@@ -45,6 +45,8 @@ public class GoodsController {
         final Long id = UserContext.getCurrentUser().getId();
         final LocalDateTime now = LocalDateTime.now();
         goodsVO.setSellerId(id);
+        //当前价默认为起拍价
+        goodsVO.setLatestPrice(goodsVO.getStartingPrice());
         //判断结束时间是否大于现在
         if(goodsVO.getEndTime().isBefore(now)) throw new ServiceException(ResultCode.GOODS_TIME_ERROR);
         //判断开始时间是否大于现在

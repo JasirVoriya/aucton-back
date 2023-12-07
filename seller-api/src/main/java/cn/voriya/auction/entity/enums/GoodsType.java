@@ -1,6 +1,7 @@
 package cn.voriya.auction.entity.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum GoodsType {
@@ -18,12 +19,14 @@ public enum GoodsType {
     GoodsType(String type) {
         this.type = type;
     }
-    public static GoodsType fromType(String type) {
-        for (GoodsType value : GoodsType.values()) {
-            if (value.type.equals(type)) {
-                return value;
+
+    @JsonCreator
+    public static GoodsType fromString(String type) {
+        for (GoodsType goodsType : GoodsType.values()) {
+            if (goodsType.getType().equals(type)) {
+                return goodsType;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Unknown enum type: " + type);
     }
 }

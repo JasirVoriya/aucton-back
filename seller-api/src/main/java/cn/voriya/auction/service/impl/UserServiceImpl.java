@@ -48,6 +48,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             //用户不存在
             throw new ServiceException(ResultCode.USER_NOT_EXIST);
         }
+        //用户未设置密码
+        if (user.getPassword() == null) {
+            throw new ServiceException(ResultCode.USER_PASSWORD_NOT_SET);
+        }
         if (!passwordService.checkPassword(password, user.getPassword())) {
             //密码错误
             throw new ServiceException(ResultCode.USER_PASSWORD_ERROR);

@@ -17,10 +17,12 @@ import java.math.BigDecimal;
 public interface IPayRecordService extends IService<PayRecord> {
     /**
      * 支付
-     * @param payerId 付款人id
-     * @param payeeId 收款人id
-     * @param money 交易金额
+     *
+     * @param payerId       付款人id
+     * @param payeeId       收款人id
+     * @param money         交易金额
      * @param payRecordType 支付类型
+     * @return
      */
-    void pay(Long payerId, Long payeeId, BigDecimal money, PayRecordType payRecordType);
+    PayRecord pay(Long payerId, Long payeeId, BigDecimal money, PayRecordType payRecordType);
 }

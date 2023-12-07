@@ -22,15 +22,18 @@ import java.util.List;
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> implements ICategoryService {
 
     @Override
-    public List<CategoryVO> getTopCategory() {
-        final List<Category> categoryList = this.baseMapper.selectList(new QueryWrapper<Category>().eq("level", 1));
+    public List<CategoryVO> getTopCategory(Integer type) {
+        final List<Category> categoryList = this.baseMapper.selectList(new QueryWrapper<Category>()
+                .eq("level", 1)
+                .eq("type", type)
+        );
         //将categoryList转换为CategoryVOList
         return categoryList.stream().map(CategoryVO::valueOf).toList();
     }
 
     @Override
-    public List<CategoryVO> getAllCategory() {
-        final List<CategoryVO> categoryVOList = this.getTopCategory();
+    public List<CategoryVO> getAllCategory(Integer type) {
+        final List<CategoryVO> categoryVOList = this.getTopCategory(type);
         categoryVOList.forEach(categoryVO -> {
             final List<CategoryVO> children = this.getChildrenCategory(categoryVO.getId());
             categoryVO.setChildren(children);

@@ -44,4 +44,8 @@ public class Category extends BaseEntity {
      * 是否启用
      */
     private Boolean enable;
+    /**
+     * 分类类型，1：民间珍品，2：司法资产
+     */
+    private Integer type;
 }

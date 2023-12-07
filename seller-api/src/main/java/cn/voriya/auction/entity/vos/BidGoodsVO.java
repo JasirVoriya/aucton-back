@@ -67,6 +67,15 @@ public class BidGoodsVO {
      * 5：已拍下
      */
     private Integer status;
+    /**
+     * 是否付款（在成功拍下之后）
+     */
+    private Boolean pay;
+    /**
+     * 付款记录id
+     */
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long paySn;
 
     public static BidGoodsVO valueOf(GoodsVO goodsVO, ParticipateRecord item, User user) {
         final BidGoodsVO bidGoodsVO = new BidGoodsVO();
@@ -76,11 +85,13 @@ public class BidGoodsVO {
         bidGoodsVO.setGoodsLatestPrice(goodsVO.getLatestPrice());
         bidGoodsVO.setGoodsName(goodsVO.getName());
         bidGoodsVO.setGoodsCover(goodsVO.getCover());
-        bidGoodsVO.setGoodsType(goodsVO.getGoodsType());
+        bidGoodsVO.setGoodsType(GoodsType.valueOf(goodsVO.getGoodsType()));
         bidGoodsVO.setGoodsId(goodsVO.getId());
         bidGoodsVO.setLatestTime(item.getUpdateTime());
         bidGoodsVO.setParticipatorId(item.getApplicantId());
-        if (!item.getPay()) {
+        bidGoodsVO.setPay(item.getPay());
+        bidGoodsVO.setPaySn(item.getPaySn());
+        if (!item.getDeposit()) {
             //待缴纳保证金
             bidGoodsVO.setStatus(1);
         } else if (item.getSuccess()) {

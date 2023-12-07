@@ -31,7 +31,7 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
 
 
     @Override
-    public void pay(Long payerId, Long payeeId, BigDecimal money, PayRecordType type) {
+    public PayRecord pay(Long payerId, Long payeeId, BigDecimal money, PayRecordType type) {
         //不能给自己转账
         if(payeeId.equals(payerId)) throw new ServiceException(ResultCode.NOT_PAY_SELF);
         //获取付款人账户
@@ -53,5 +53,6 @@ public class PayRecordServiceImpl extends ServiceImpl<PayRecordMapper, PayRecord
         payRecord.setPayeeId(payeeId);
         payRecord.setType(PayRecordType.Deposit);
         save(payRecord);
+        return payRecord;
     }
 }

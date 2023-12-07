@@ -85,6 +85,7 @@ public class ParticipateRecordServiceImpl extends ServiceImpl<ParticipateRecordM
         // 将出价最高的用户的状态改为已拍下
         this.update(new UpdateWrapper<ParticipateRecord>()
                 .eq("goods_id", goodsId)
+                .ne("latest_price", 0)// 出价为0的不算
                 .orderByDesc("latest_price")
                 .last("limit 1")
                 .set("success", true)

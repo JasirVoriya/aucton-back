@@ -16,9 +16,9 @@ import java.util.List;
  */
 public interface ICategoryService extends IService<Category> {
 
-    List<CategoryVO> getTopCategory();
+    List<CategoryVO> getTopCategory(Integer type);
 
-    List<CategoryVO> getAllCategory();
+    List<CategoryVO> getAllCategory(Integer type);
 
     List<CategoryVO> getChildrenCategory(Long id);
 }

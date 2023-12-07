@@ -43,6 +43,7 @@ public enum ResultCode {
     USER_OLD_PASSWORD_ERROR(20011, "旧密码不正确"),
     USER_COLLECTION_EXIST(20012, "无法重复收藏"),
     OTHER_PLACE_LOGIN(20013, "账号在他处登录"),
+    USER_PASSWORD_NOT_SET(20014,"用户未设置密码，请用邮箱验证码登录" ),
 
     /**
      * OSS
@@ -70,6 +71,7 @@ public enum ResultCode {
     GOODS_IS_NOT_ON_SALE(60002, "拍卖已结束"),
     GOODS_TIME_ERROR(60003, "商品时间设置错误"),
     GOODS_START_TIME_ERROR(60004, "开始时间必须设置在一小时之后"),
+    GOODS_IS_ON_SALE(60005,"拍卖还未结束" ),
 
     /**
      * 参拍信息
@@ -77,19 +79,21 @@ public enum ResultCode {
     PARTICIPATE_BID_INFO_ALREADY_EXIST(70001, "您已经报名成功，请尽快支付"),
     PARTICIPATE_BID_INFO_ALREADY_PAY(70002, "您已经报名并支付成功，请勿重复报名"),
     PARTICIPATE_SUCCESS_BUT_PAY_FAIL(70003, "您已报名成功，但是支付失败，请尽快完成支付"),
-    PARTICIPATE_BID_INFO_NOT_EXIST(70004, "参拍人信息错误"),
+    PARTICIPATE_BID_INFO_NOT_EXIST(70004, "拍卖信息不存在"),
     PARTICIPATE_IS_SELLER(70005, "不能参与自己发布的拍卖"),
 
     /**
      * 支付
      */
     BALANCE_NOT_ENOUGH(80001, "余额不足"),
-    NOT_PAY_SELF(80001, "不能给自己转账"),
+    NOT_PAY_SELF(80002, "不能给自己转账"),
+    PAY_ALREADY(80003,"您已支付，请勿重复支付" ),
 
     /**
      * 出价
      */
-    BID_PRICE_TOO_LOW(90001, "出价不能低于目前最高价加最低出价");
+    BID_PRICE_TOO_LOW(90001, "出价不能低于目前最高价加最低出价"),
+    NOT_BID_SUCCESS(90001,"该拍品的得主不是您，无法付款" );
 
 
     private final Integer code;

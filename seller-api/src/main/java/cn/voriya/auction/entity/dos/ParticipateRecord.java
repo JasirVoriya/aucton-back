@@ -34,9 +34,23 @@ public class ParticipateRecord extends BaseEntity {
     private Long applicantId;
 
     /**
-     * 是否缴纳报名费
+     * 是否付款（在成功拍下之后）
      */
     private Boolean pay;
+    /**
+     * 付款记录id
+     */
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long paySn;
+    /**
+     * 是否缴纳保证金
+     */
+    private Boolean deposit;
+    /**
+     * 保证金记录id
+     */
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long depositSn;
 
     /**
      * 该用户是否成功拍下

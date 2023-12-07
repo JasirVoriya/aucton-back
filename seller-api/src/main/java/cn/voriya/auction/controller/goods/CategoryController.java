@@ -35,7 +35,6 @@ public class CategoryController {
      */
     @PostMapping
     public ResultMessage<CategoryVO> addCategory(CategoryVO categoryVO) {
-
         //判断分类名称是否重复
         final Category categoryByName = categoryService.getOne(new QueryWrapper<Category>().eq("name", categoryVO.getName()));
         if (categoryByName != null) throw new ServiceException(ResultCode.CATEGORY_NAME_EXIST);
@@ -45,7 +44,10 @@ public class CategoryController {
             if (parentCategory == null)
                 throw new ServiceException(ResultCode.PARENT_CATEGORY_NOT_EXIST);
             categoryVO.setLevel(parentCategory.getLevel() + 1);
-        } else categoryVO.setLevel(1);
+            categoryVO.setType(parentCategory.getType());
+        } else {
+            categoryVO.setLevel(1);
+        }
         categoryService.getBaseMapper().insert(categoryVO);
         final Category category = categoryService.getById(categoryVO.getId());
         return ResultUtil.data(CategoryVO.valueOf(category));
@@ -72,18 +74,32 @@ public class CategoryController {
     }
 
     /**
-     * 查询顶级分类
+     * 查询顶级分类：民间珍品
      */
     @GetMapping
-    public ResultMessage<List<CategoryVO>> getTopCategory() {
-        return ResultUtil.data(categoryService.getTopCategory());
+    public ResultMessage<List<CategoryVO>> getRareGoodsTopCategory() {
+        return ResultUtil.data(categoryService.getTopCategory(1));
     }
     /**
-     * 查询所有分类
+     * 查询所有分类：民间珍品
      */
     @GetMapping("/all")
-    public ResultMessage<List<CategoryVO>> getAllCategory() {
-        return ResultUtil.data(categoryService.getAllCategory());
+    public ResultMessage<List<CategoryVO>> getRareGoodsAllCategory() {
+        return ResultUtil.data(categoryService.getAllCategory(1));
+    }
+    /**
+     * 查询顶级分类：司法资产
+     */
+    @GetMapping("/judicial/top")
+    public ResultMessage<List<CategoryVO>> getJudicialTopCategory() {
+        return ResultUtil.data(categoryService.getTopCategory(2));
+    }
+    /**
+     * 查询所有分类：司法资产
+     */
+    @GetMapping("/judicial/all")
+    public ResultMessage<List<CategoryVO>> getJudicialAllCategory() {
+        return ResultUtil.data(categoryService.getAllCategory(2));
     }
 
     /**

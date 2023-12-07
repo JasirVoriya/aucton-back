@@ -1,6 +1,8 @@
 package cn.voriya.auction.controller.auction;
 
+import cn.voriya.auction.entity.dos.Goods;
 import cn.voriya.auction.entity.dos.ParticipateRecord;
+import cn.voriya.auction.entity.dos.PayRecord;
 import cn.voriya.auction.entity.enums.PayRecordType;
 import cn.voriya.auction.entity.vos.BidGoodsVO;
 import cn.voriya.auction.entity.vos.GoodsVO;
@@ -49,40 +51,49 @@ public class ParticipateRecordController {
     @PostMapping
     @Login
     public ResultMessage<Object> participate(Long goodsId) {
-        final GoodsVO goodsVO = GoodsVO.valueOf(goodsService.getById(goodsId));
+        final Goods goods = goodsService.getById(goodsId);
         // 拍卖已结束，不能参拍
-        if (goodsVO.getStatus().equals(3)) throw new ServiceException(ResultCode.GOODS_IS_NOT_ON_SALE);
+        if (goods.getStatus().equals(3)) throw new ServiceException(ResultCode.GOODS_IS_NOT_ON_SALE);
         //参拍人id
         final Long applicantId = UserContext.getCurrentUser().getId();
         //参拍人和卖家是同一个人
-        if (applicantId.equals(goodsVO.getSellerId()))
+        if (applicantId.equals(goods.getSellerId()))
             throw new ServiceException(ResultCode.PARTICIPATE_IS_SELLER);
         ParticipateRecord participateRecord = participateRecordService.getInfo(goodsId, applicantId);
         // 已经报名参拍
         if (participateRecord != null) {
-            if (!participateRecord.getPay())
+            // 没有支付保证金
+            if (!participateRecord.getDeposit())
                 throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_ALREADY_EXIST);
             else throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_ALREADY_PAY);
         }
         participateRecord = new ParticipateRecord();
         participateRecord.setGoodsId(goodsId);
         participateRecord.setApplicantId(applicantId);
+        //设置参拍状态：和商品状态一致
+        participateRecord.setStatus(goods.getStatus());
         //如果不需要支付保证金，直接参拍成功
-        if (goodsVO.getDeposit().compareTo(new BigDecimal(0)) == 0){
-            participateRecord.setPay(true);
+        if (goods.getDeposit().compareTo(new BigDecimal(0)) == 0){
+            //设置保证金支付状态：已支付
+            participateRecord.setDeposit(true);
             participateRecordService.save(participateRecord);
             return ResultUtil.success();
         }
-        participateRecord.setPay(false);
+        //设置保证金支付状态：未支付
+        participateRecord.setDeposit(false);
+        //保存参拍信息，报名成功，但未支付保证金
         participateRecordService.save(participateRecord);
         //报名人数+1
-        goodsVO.setRegistration(goodsVO.getRegistration()+1);
-        goodsService.updateById(goodsVO);
-        // 报名成功，支付报名费
+        goods.setRegistration(goods.getRegistration()+1);
+        goodsService.updateById(goods);
+        // 支付报名费
         try {
-            payRecordService.pay(applicantId, goodsVO.getSellerId(), goodsVO.getDeposit(), PayRecordType.Deposit);
-            // 支付成功，更新参拍信息
-            participateRecord.setPay(true);
+            final PayRecord payRecord = payRecordService.pay(applicantId, goods.getSellerId(), goods.getDeposit(), PayRecordType.Deposit);
+            // 更新保证金支付状态：已支付
+            participateRecord.setDeposit(true);
+            // 更新保证金支付记录id
+            participateRecord.setDepositSn(payRecord.getId());
+            // 保存到数据库
             participateRecordService.updateById(participateRecord);
         } catch (Exception e) {
             throw new ServiceException(ResultCode.PARTICIPATE_SUCCESS_BUT_PAY_FAIL);
@@ -106,20 +117,22 @@ public class ParticipateRecordController {
     @PostMapping("/pay")
     @Login
     public ResultMessage<Object> payDeposit(Long goodsId) {
-        final GoodsVO goodsVO = GoodsVO.valueOf(goodsService.getById(goodsId));
+        final Goods goods = goodsService.getById(goodsId);
         // 拍卖已结束，不能参拍
-        if (goodsVO.getStatus().equals(3)) throw new ServiceException(ResultCode.GOODS_IS_NOT_ON_SALE);
+        if (goods.getStatus().equals(3)) throw new ServiceException(ResultCode.GOODS_IS_NOT_ON_SALE);
         //参拍人id
         final Long applicantId = UserContext.getCurrentUser().getId();
         ParticipateRecord participateRecord =  participateRecordService.getInfo(goodsId, applicantId);
         // 未报名参拍
         if (participateRecord == null) throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_NOT_EXIST);
         // 已经支付保证金
-        if (participateRecord.getPay()) throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_ALREADY_PAY);
+        if (participateRecord.getDeposit()) throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_ALREADY_PAY);
         // 开始支付保证金
-        payRecordService.pay(applicantId, goodsVO.getSellerId(), goodsVO.getDeposit(), PayRecordType.Deposit);
+        final PayRecord payRecord = payRecordService.pay(applicantId, goods.getSellerId(), goods.getDeposit(), PayRecordType.Deposit);
         // 支付成功，更新参拍信息
-        participateRecord.setPay(true);
+        participateRecord.setDeposit(true);
+        participateRecord.setDepositSn(payRecord.getId());
+        // 保存到数据库
         participateRecordService.updateById(participateRecord);
         return ResultUtil.success();
     }
@@ -135,7 +148,7 @@ public class ParticipateRecordController {
                 new Page<>(page, size),
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", false));
+                        .eq("deposit", false));
         final Page<BidGoodsVO> bidGoodsVOList = participateRecordService.getBidGoodsVOPage(unpaidRecord);
         return ResultUtil.data(bidGoodsVOList);
     }
@@ -151,7 +164,7 @@ public class ParticipateRecordController {
                 new Page<>(page, size),
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("status", 1)
         );
         final Page<BidGoodsVO> bidGoodsVOList = participateRecordService.getBidGoodsVOPage(waitRecord);
@@ -169,7 +182,7 @@ public class ParticipateRecordController {
                 new Page<>(page, size),
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("status", 2)
         );
         final Page<BidGoodsVO> bidGoodsVOList = participateRecordService.getBidGoodsVOPage(biddingRecord);
@@ -187,7 +200,7 @@ public class ParticipateRecordController {
                 new Page<>(page, size),
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("success",false)
                         .eq("status", 3)
         );
@@ -206,7 +219,7 @@ public class ParticipateRecordController {
                 new Page<>(page, size),
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("success", true)
         );
         final Page<BidGoodsVO> bidGoodsVOList = participateRecordService.getBidGoodsVOPage(successRecord);
@@ -224,27 +237,27 @@ public class ParticipateRecordController {
         Long unpaidNum = participateRecordService.getBaseMapper().selectCount(
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", false)
+                        .eq("deposit", false)
         );
         //获取用户已缴费、待开拍的参拍商品记录
         final Long waitNum = participateRecordService.getBaseMapper().selectCount(
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("status", 1)
         );
         //获取用户正在参拍商品记录
         Long biddingNum = participateRecordService.getBaseMapper().selectCount(
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("status", 2)
         );
         //获取已经结束的参拍商品记录
         Long endNum = participateRecordService.getBaseMapper().selectCount(
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("success",false)
                         .eq("status", 3)
         );
@@ -252,7 +265,7 @@ public class ParticipateRecordController {
         Long successNum = participateRecordService.getBaseMapper().selectCount(
                 new QueryWrapper<ParticipateRecord>()
                         .eq("applicant_id", userId)
-                        .eq("pay", true)
+                        .eq("deposit", true)
                         .eq("success", true)
         );
         userBidGoodsNumVO.setUnpaidNum(unpaidNum);

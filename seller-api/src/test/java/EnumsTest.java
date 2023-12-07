@@ -1,12 +1,12 @@
-import cn.voriya.framework.entity.dos.File;
+
+import cn.voriya.auction.entity.enums.GoodsType;
 import cn.voriya.framework.utils.JsonUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 public class EnumsTest {
     @Test
     public void test() {
-        final File file = new File();
-        file.setType(FileType.PNG);
-        System.out.println(JsonUtil.toJson(file));
+        System.out.println(JsonUtil.toObject("民间珍品", GoodsType.class));
     }
 }

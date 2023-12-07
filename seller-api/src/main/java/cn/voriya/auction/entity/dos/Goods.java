@@ -1,6 +1,5 @@
 package cn.voriya.auction.entity.dos;
 
-import cn.voriya.auction.entity.enums.GoodsType;
 import cn.voriya.framework.mybatis.BaseEntity;
 import cn.voriya.framework.mybatis.ListLongToStringSerializer;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -11,6 +10,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
@@ -28,6 +28,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName(autoResultMap = true)
+@NoArgsConstructor
 public class Goods extends BaseEntity {
 
     /**
@@ -100,7 +101,7 @@ public class Goods extends BaseEntity {
     /**
      * 商品类型
      */
-    private GoodsType goodsType;
+    private String goodsType;
     /**
      * 状态
      * 0: 未设置

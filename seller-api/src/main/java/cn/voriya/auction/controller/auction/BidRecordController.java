@@ -54,7 +54,7 @@ public class BidRecordController {
 //        参拍信息不存在
         if (info == null) throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_NOT_EXIST);
 //        参拍信息存在但未缴费
-        if (!info.getPay()) throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_ALREADY_EXIST);
+        if (!info.getDeposit()) throw new ServiceException(ResultCode.PARTICIPATE_BID_INFO_ALREADY_EXIST);
 //        商品信息
         final Goods goods = goodsService.getById(goodsId);
 //        出价小于当前价+最低出价
